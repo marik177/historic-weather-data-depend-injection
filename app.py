@@ -4,7 +4,6 @@ import datetime
 import matplotlib.dates
 import matplotlib.pyplot
 
-
 BASE_DIR = Path(__file__).resolve(strict=True).parent
 
 
@@ -28,8 +27,11 @@ class App:
 
 if __name__ == '__main__':
     import sys
-    from urban_climate_csv import DataSource
+    from open_weather_json import DataSource
+
     file_name = sys.argv[1]
     app = App(DataSource())
     temperatures_by_hour = app.read(file_name=file_name)
     app.draw(temperatures_by_hour)
+
+    # to run the program: $ python app.py moscow.json
