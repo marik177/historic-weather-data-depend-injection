@@ -30,3 +30,10 @@ class App:
         dates = matplotlib.dates.date2num(dates)
         matplotlib.pyplot.plot_date(dates, temperatures, linestyle=':')
         matplotlib.pyplot.show()
+
+if __name__ == '__main__':
+    import sys
+    file_name = sys.argv[1]
+    app = App()
+    temperatures_by_hour = app.read(file_name)
+    app.draw(temperatures_by_hour)
