@@ -8,10 +8,16 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent
 
 
 def test_read():
-    app = App()
-    for key, value in app.read(file_name=Path(BASE_DIR).joinpath('london.csv')).items():
-        assert datetime.datetime.fromisoformat(key)
-        assert value - 0 == value
+    hour = datetime.datetime.now().isoformat()
+    temperature = 14.52
+    temperature_by_hour = {hour: temperature}
+
+    data_source = MagicMock()
+    data_source.read.return_value = temperature_by_hour
+    app = App(
+        data_source=data_source
+    )
+    assert app.read(file_name='something.csv') == temperature_by_hour
 
 
 def test_draw(monkeypatch):
@@ -20,7 +26,7 @@ def test_draw(monkeypatch):
     monkeypatch.setattr(matplotlib.pyplot, 'plot_date', plot_date_mock)
     monkeypatch.setattr(matplotlib.pyplot, 'show', show_mock)
 
-    app = App()
+    app = App(MagicMock())
     hour = datetime.datetime.now().isoformat()
     temperature = 14.52
 
