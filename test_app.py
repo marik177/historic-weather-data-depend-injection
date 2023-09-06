@@ -13,24 +13,24 @@ def test_read():
     temperature_by_hour = {hour: temperature}
 
     data_source = MagicMock()
+    plot_mock = MagicMock()
     data_source.read.return_value = temperature_by_hour
     app = App(
-        data_source=data_source
+        data_source=data_source,
+        plot=plot_mock
     )
     assert app.read(file_name='something.csv') == temperature_by_hour
 
 
 def test_draw(monkeypatch):
-    plot_date_mock = MagicMock()
-    show_mock = MagicMock()
-    monkeypatch.setattr(matplotlib.pyplot, 'plot_date', plot_date_mock)
-    monkeypatch.setattr(matplotlib.pyplot, 'show', show_mock)
+    plot_mock = MagicMock()
 
-    app = App(MagicMock())
-    hour = datetime.datetime.now().isoformat()
+    app = App(data_source=MagicMock,
+              plot=plot_mock)
+    hour = datetime.datetime.now()
+    iso_hour = hour.isoformat()
     temperature = 14.52
+    temperature_by_hour = {iso_hour: temperature}
 
-    app.draw({hour: temperature})
-    _, called_temperatures = plot_date_mock.call_args[0]
-    assert called_temperatures == [temperature]
-    show_mock.assert_called()
+    app.draw(temperature_by_hour)
+    plot_mock.draw.assert_called_with([hour], [temperature])
