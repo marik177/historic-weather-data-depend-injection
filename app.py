@@ -28,8 +28,8 @@ class App:
 if __name__ == '__main__':
     import sys
     from open_weather_json import DataSource
-    from matplotlib_plot import Plot
-
+    # from matplotlib_plot import Plot
+    from plotly_plot import Plot
     file_name = sys.argv[1]
     app = App(DataSource(), Plot())
     temperatures_by_hour = app.read(file_name=file_name)
