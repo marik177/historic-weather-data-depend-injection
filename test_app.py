@@ -34,3 +34,9 @@ def test_draw(monkeypatch):
 
     app.draw(temperature_by_hour)
     plot_mock.draw.assert_called_with([hour], [temperature])
+
+
+def test_configure():
+    app = App.configure('config.json')
+
+    assert isinstance(app, App)

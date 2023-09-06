@@ -1,4 +1,5 @@
 import csv
+import json
 from pathlib import Path
 import datetime
 import matplotlib.dates
@@ -24,15 +25,22 @@ class App:
 
         self.plot.draw(dates, temperatures)
 
+    @classmethod
+    def configure(cls, file_name):
+        with open(file_name, 'r') as file:
+            config = json.load(file)
+
+        data_source = __import__(config['data_source']['name']).DataSource()
+        plot = __import__(config['plot']['name']).Plot()
+        return cls(data_source, plot)
+
 
 if __name__ == '__main__':
     import sys
-    from open_weather_json import DataSource
-    # from matplotlib_plot import Plot
-    from plotly_plot import Plot
-    file_name = sys.argv[1]
-    app = App(DataSource(), Plot())
+    config_file = sys.argv[1]
+    file_name = sys.argv[2]
+    app = App.configure(config_file)
     temperatures_by_hour = app.read(file_name=file_name)
     app.draw(temperatures_by_hour)
 
-    # to run the program: $ python app.py moscow.json
+    # to run the program: $ python app.py config.json moscow.json
